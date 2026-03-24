@@ -32,10 +32,23 @@ windspeed: {
 
 ## Humidity
 
-Tenemos un solo valor de outlier de 0.0 en el instant 69, lo cual es raro. No entiendo bien que esta pasando.
+Tenemos un solo valor de outlier de 0.0 en el instant 69, lo cual es raro. Se interpolo el valor usando impute_data.py. Se buscan vecinos con valores de temperatura y velocidad de viento similares para inferir la humedad.
+
+## Test
+
+Hay outliers para velocidad del viento y humedada en algunos de los campos pero no los podemos identificar como errores. Verficacamos para esos dias usando el archivo day.csv y los promedios dan lo que se muestra como outliers.
+
+Variable: hum        -> Detected outliers: 1
+hum: {
+  50: 0.187917
+}
+Variable: windspeed  -> Detected outliers: 2
+windspeed: {
+  50: 0.507463
+  45: 0.417908
+}
 
 # Variables Categóricas
-
 
 # Limpieza de variables
 
@@ -56,7 +69,7 @@ La temperatura y sensacion termica son valores que aportan practicamente la mism
 ### Meses con Season
 En boxplots_categorics_cnt.png vemos como se relacionan ambas variables en cuanto a los valores que producen para cnt.
 
-Ademas ambas nos dan la misma informacion, en que epoca del año nos encontramos. Es mejor quedarse con la informacion de months ya que podemos obtener mas informacion sobre hechos puntuales en cada mes particular.
+Ademas ambas nos dan la misma informacion, en que epoca del año nos encontramos. La informacion de months nos permite inferir mas informacion mes a mes pero el problema es que al usar one-hot encoding tendremos 12 variables nuevas contra 4.
 
 ### Casual y Registered con cnt
 Por mas que en la matriz de correlacion solo vemos cnt y registered como correlacionadas, no tiene sentido usarlas casual y registered para evaluar ya que por definicion se suman para obtener cnt que es nuestro target.
