@@ -73,7 +73,7 @@ def main():
     print(f"Model: {best[0]}")
     print(f"Degree: {best[1]}")
     print(f"Lambda: {best[2]}")
-    print(f"Validation RMSE: {best[4]:.2f}")
+    print(f"Validation RMSE: {best[5]:.2f}")
 
     model = best[3]
 
