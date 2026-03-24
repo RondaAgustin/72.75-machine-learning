@@ -1,4 +1,4 @@
-holiday,workingday,atemp,hum,windspeed,cnt,season_2,season_3,season_4,weathersit_2,weathersit_3,weathersit_4
+holiday,workingday,atemp,hum,windspeed,target,season_2,season_3,season_4,weathersit_2,weathersit_3,weathersit_4
 0,1,0.323225,0.662917,0.342046,4094,0,0,1,1,0,0
 0,1,0.555361,0.939565,0.192748,1842,0,1,0,0,1,0
 0,0,0.310604,0.612917,0.0957833,3614,0,0,1,0,0,0

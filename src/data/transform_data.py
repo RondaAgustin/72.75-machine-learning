@@ -31,6 +31,10 @@ def transform_bike_data(input_path: str, output_path: str) -> None:
     if 'weathersit_4' not in df.columns:
         df['weathersit_4'] = 0
         
+    # Rename target variable from 'cnt' to 'target'
+    if 'cnt' in df.columns:
+        df = df.rename(columns={'cnt': 'target'})
+        
     # 4. Export the data
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     df.to_csv(output_path, index=False)
