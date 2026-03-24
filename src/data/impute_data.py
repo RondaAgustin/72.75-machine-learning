@@ -1,6 +1,7 @@
 import pandas as pd
 from typing import List, Any
 import os
+import sys
 
 def impute_humidity_by_instant(file_path: str, target_instant: int) -> pd.DataFrame:
     """
@@ -89,12 +90,15 @@ def impute_humidity_by_instant(file_path: str, target_instant: int) -> pd.DataFr
     return df
 
 if __name__ == "__main__":
+    # Get filename from arguments or use default
+    filename = sys.argv[1] if len(sys.argv) > 1 else "train.csv"
+    
     # Determine the project's base path to be able to run the script from any directory
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    input_path = os.path.join(base_dir, "data", "processed", "train.csv")
+    input_path = os.path.join(base_dir, "data", "processed", filename)
     
     # The anomalous humidity record discovered is instant 69
     target = 69
     
-    print("Starting humidity imputation...")
+    print(f"Starting humidity imputation on {filename}...")
     corrected_df = impute_humidity_by_instant(input_path, target)

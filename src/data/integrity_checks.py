@@ -1,13 +1,15 @@
 
 import pandas as pd
+import os
+import sys
 
-def run_integrity_checks():
+def run_integrity_checks(input_path: str):
     # 1. Load only the training data
-    print("--- STARTING INTEGRITY CHECKS ---")
+    print(f"--- STARTING INTEGRITY CHECKS ON {os.path.basename(input_path)} ---")
     try:
-        df = pd.read_csv('data/processed/train.csv')
+        df = pd.read_csv(input_path)
     except FileNotFoundError:
-        print("Error: data/interim/train.csv not found")
+        print(f"Error: {input_path} not found")
         return
 
     # 2. Check for empty fields (Missing Values)
@@ -55,4 +57,10 @@ def run_integrity_checks():
     print("--- CHECKS FINISHED ---")
 
 if __name__ == "__main__":
-    run_integrity_checks()
+    # Get filename from arguments or use default
+    filename = sys.argv[1] if len(sys.argv) > 1 else "train.csv"
+    
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    input_path = os.path.join(base_dir, "data", "processed", filename)
+    
+    run_integrity_checks(input_path)

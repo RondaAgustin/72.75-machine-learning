@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import sys
 
 def transform_bike_data(input_path: str, output_path: str) -> None:
     """
@@ -36,8 +37,15 @@ def transform_bike_data(input_path: str, output_path: str) -> None:
     print(f"Transformation completed. File successfully saved to: {output_path}")
 
 if __name__ == "__main__":
-    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    input_path = os.path.join(base_dir, "data", "processed", "train.csv")
-    output_path = os.path.join(base_dir, "data", "processed", "train_transformed.csv")
+    # Get filename from arguments or use default
+    filename = sys.argv[1] if len(sys.argv) > 1 else "train.csv"
     
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    input_path = os.path.join(base_dir, "data", "processed", filename)
+    
+    # Create output filename dynamically (e.g., train.csv -> train_transformed.csv)
+    name, ext = os.path.splitext(filename)
+    output_filename = f"{name}_transformed{ext}"
+    output_path = os.path.join(base_dir, "data", "processed", output_filename)
+
     transform_bike_data(input_path, output_path)

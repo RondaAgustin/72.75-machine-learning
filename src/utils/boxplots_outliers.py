@@ -3,15 +3,16 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import math
 import os
+import sys
 
-def main():
+def main(filename: str):
     # 1. Ensure the output directory exists
     os.makedirs('reports/figures', exist_ok=True)
     
     # 2. Load the dataset (with fallback to processed if interim doesn't exist)
-    data_path = 'data/interim/train.csv'
-    if not os.path.exists(data_path) and os.path.exists('data/processed/train.csv'):
-        data_path = 'data/processed/train.csv'
+    data_path = f'data/interim/{filename}'
+    if not os.path.exists(data_path) and os.path.exists(f'data/processed/{filename}'):
+        data_path = f'data/processed/{filename}'
         
     try:
         df = pd.read_csv(data_path, index_col='instant')
@@ -26,6 +27,9 @@ def main():
     # Grid configuration (3 columns)
     n_cols = 3
     n_rows = math.ceil(len(numeric_vars) / n_cols)
+    
+    # Extract base name for output files
+    name, _ = os.path.splitext(filename)
     
     # 4. Generate Histograms grid
     fig_hist, axes_hist = plt.subplots(n_rows, n_cols, figsize=(16, n_rows * 4))
@@ -43,7 +47,7 @@ def main():
         axes_hist_flat[j].set_visible(False)
         
     plt.tight_layout()
-    hist_output = 'reports/figures/histograms.png'
+    hist_output = f'reports/figures/histograms_{name}.png'
     fig_hist.savefig(hist_output)
     print(f"Figure generated and saved: {hist_output}")
     plt.close(fig_hist)
@@ -62,7 +66,7 @@ def main():
         axes_box_flat[j].set_visible(False)
         
     plt.tight_layout()
-    box_output = 'reports/figures/boxplots_outliers.png'
+    box_output = f'reports/figures/boxplots_outliers_{name}.png'
     fig_box.savefig(box_output)
     print(f"Figure generated and saved: {box_output}\n")
     plt.close(fig_box)
@@ -90,4 +94,6 @@ def main():
             print("}")
 
 if __name__ == '__main__':
-    main()
+    # Get filename from arguments or use default
+    file_name = sys.argv[1] if len(sys.argv) > 1 else "train.csv"
+    main(file_name)
