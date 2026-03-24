@@ -4,25 +4,25 @@ import matplotlib.pyplot as plt
 import os
 
 def main():
-    # Asegurar que el directorio de salida exista
+    # Ensure the output directory exists
     os.makedirs('reports/figures', exist_ok=True)
     
-    # Cargar el dataset limpio
+    # Load the clean dataset
     data_path = 'data/processed/train.csv'
     try:
         df = pd.read_csv(data_path)
     except FileNotFoundError:
-        print(f"Error: No se encontró el dataset en {data_path}.")
+        print(f"Error: Dataset not found at {data_path}.")
         return
 
-    # Seleccionar únicamente las variables numéricas
+    # Select only numeric variables
     numeric_vars = ['temp', 'atemp', 'hum', 'windspeed', 'casual', 'registered', 'cnt']
     df_numeric = df[numeric_vars]
 
-    # Calcular la Pearson Correlation Matrix usando Pandas
+    # Calculate the Pearson Correlation Matrix using Pandas
     corr_matrix = df_numeric.corr(method='pearson')
 
-    # Generar figura visualizando esta matriz con un Heatmap de Seaborn
+    # Generate a figure visualizing this matrix with a Seaborn Heatmap
     plt.figure(figsize=(12, 10))
     sns.heatmap(
         corr_matrix, 
@@ -33,12 +33,12 @@ def main():
     )
     plt.title('Pearson Correlation Matrix', fontsize=16)
     
-    # Guardar la figura
+    # Save the figure
     output_path = 'reports/figures/correlation_matrix.png'
     plt.savefig(output_path, bbox_inches='tight')
     plt.close()
 
-    # Imprimir en consola el reporte de alta correlación
+    # Print the high correlation report to console
     print("High Correlation Pairs (>0.75):")
     for i in range(len(corr_matrix.columns)):
         for j in range(i + 1, len(corr_matrix.columns)):

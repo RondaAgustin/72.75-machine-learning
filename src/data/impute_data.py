@@ -89,12 +89,12 @@ def impute_humidity_by_instant(file_path: str, target_instant: int) -> pd.DataFr
     return df
 
 if __name__ == "__main__":
-    # Determinar la ruta base del proyecto para poder ejecutar el script desde cualquier directorio
+    # Determine the project's base path to be able to run the script from any directory
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    ruta_entrada = os.path.join(base_dir, "data", "processed", "train.csv")
+    input_path = os.path.join(base_dir, "data", "processed", "train.csv")
     
-    # El registro anómalo de humedad que se descubrió es el instant 69
+    # The anomalous humidity record discovered is instant 69
     target = 69
     
-    print("Iniciando imputación de humedad...")
-    df_corregido = impute_humidity_by_instant(ruta_entrada, target)
+    print("Starting humidity imputation...")
+    corrected_df = impute_humidity_by_instant(input_path, target)

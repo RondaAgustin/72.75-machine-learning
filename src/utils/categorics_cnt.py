@@ -4,35 +4,35 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import os
 
-# Cargar el dataset
+# Load the dataset
 try:
     df = pd.read_csv('data/processed/train.csv')
 except FileNotFoundError:
-    print("Error: El archivo data/processed/train.csv no fue encontrado.")
-    print("Por favor, asegúrese que el path es el correcto.")
+    print("Error: The file data/processed/train.csv was not found.")
+    print("Please make sure the path is correct.")
     exit()
 
 
-# Definir variables categóricas y el target
+# Define categorical variables and the target
 categorical_vars = ['season', 'yr', 'mnth', 'holiday', 'weekday', 'workingday', 'weathersit']
 target = 'cnt'
 
-# Asegurar que el directorio de salida exista
+# Ensure the output directory exists
 os.makedirs('reports/figures', exist_ok=True)
 
-# --- Countplots de variables categóricas ---
+# --- Categorical variables countplots ---
 plt.figure(figsize=(20, 15))
 for i, var in enumerate(categorical_vars, 1):
     plt.subplot(3, 3, i)
     sns.countplot(x=var, data=df)
-    plt.title(f'Frecuencia de {var}')
+    plt.title(f'{var} Frequency')
 plt.tight_layout()
-plt.savefig('reports/figures/frecuencias_categoricas.png')
+plt.savefig('reports/figures/categorical_frequencies.png')
 plt.close()
 
-print("reports/figures/frecuencias_categoricas.png ha sido guardado.")
+print("reports/figures/categorical_frequencies.png has been saved.")
 
-# --- Boxplots de variables categóricas vs. target ---
+# --- Categorical variables vs. target boxplots ---
 plt.figure(figsize=(20, 15))
 for i, var in enumerate(categorical_vars, 1):
     plt.subplot(3, 3, i)

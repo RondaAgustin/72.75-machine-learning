@@ -5,48 +5,48 @@ import os
 
 def make_dataset():
     """
-    Script de ejecución única para cargar el dataset crudo, dividirlo en conjuntos
-    de entrenamiento y prueba, y guardarlos en la carpeta de datos procesados.
+    One-time execution script to load the raw dataset, split it into
+    training and test sets, and save them in the processed data folder.
     """
-    # --- 1. Definición de Rutas ---
-    # Ajusta la ruta base para que funcione desde la raíz del proyecto.
+    # --- 1. Path Definitions ---
+    # Adjust the base path to work from the project root.
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     RAW_DATA_PATH = os.path.join(BASE_DIR, 'data', 'raw', 'day.csv')
     PROCESSED_DATA_PATH = os.path.join(BASE_DIR, 'data', 'processed')
 
-    # --- 2. Carga de Datos ---
+    # --- 2. Load Data ---
     try:
-        print(f"Cargando datos crudos desde: {RAW_DATA_PATH}")
+        print(f"Loading raw data from: {RAW_DATA_PATH}")
         df = pd.read_csv(RAW_DATA_PATH)
-        print("Datos crudos cargados exitosamente.")
+        print("Raw data loaded successfully.")
     except FileNotFoundError:
-        print(f"Error: No se encontró el archivo en: {RAW_DATA_PATH}")
+        print(f"Error: File not found at: {RAW_DATA_PATH}")
         return
 
-    # --- 3. División de Datos ---
-    print("Dividiendo los datos en conjuntos de entrenamiento y prueba (80/20)...")
+    # --- 3. Split Data ---
+    print("Splitting data into training and test sets (80/20)...")
     train_df, test_df = train_test_split(
         df,
         test_size=0.2,
-        random_state=42  # Semilla para reproducibilidad
+        random_state=42  # Seed for reproducibility
     )
-    print("División completada.")
-    print(f"Tamaño del conjunto de entrenamiento: {train_df.shape}")
-    print(f"Tamaño del conjunto de prueba: {test_df.shape}")
+    print("Split completed.")
+    print(f"Training set size: {train_df.shape}")
+    print(f"Test set size: {test_df.shape}")
 
-    # --- 4. Guardado de Datos Procesados ---
+    # --- 4. Save Processed Data ---
     os.makedirs(PROCESSED_DATA_PATH, exist_ok=True)
 
     train_output_path = os.path.join(PROCESSED_DATA_PATH, 'train.csv')
     test_output_path = os.path.join(PROCESSED_DATA_PATH, 'test.csv')
 
-    print(f"Guardando conjunto de entrenamiento en: {train_output_path}")
+    print(f"Saving training set to: {train_output_path}")
     train_df.to_csv(train_output_path, index=False)
 
-    print(f"Guardando conjunto de prueba en: {test_output_path}")
+    print(f"Saving test set to: {test_output_path}")
     test_df.to_csv(test_output_path, index=False)
 
-    print("\nProceso finalizado. Los archivos train.csv y test.csv se han generado en data/processed/.")
+    print("\nProcess finished. The files train.csv and test.csv have been generated in data/processed/.")
 
 if __name__ == '__main__':
     make_dataset()

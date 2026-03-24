@@ -5,57 +5,57 @@ import math
 import os
 
 def main():
-    # 1. Asegurar que el directorio de salida exista
+    # 1. Ensure the output directory exists
     os.makedirs('reports/figures', exist_ok=True)
     
-    # 2. Cargar el dataset (con fallback a processed si interim no existe)
+    # 2. Load the dataset (with fallback to processed if interim doesn't exist)
     data_path = 'data/interim/train.csv'
     if not os.path.exists(data_path) and os.path.exists('data/processed/train.csv'):
         data_path = 'data/processed/train.csv'
         
     try:
         df = pd.read_csv(data_path, index_col='instant')
-        print(f"Dataset cargado exitosamente desde: {data_path}\n")
+        print(f"Dataset loaded successfully from: {data_path}\n")
     except FileNotFoundError:
-        print(f"Error: No se encontró el dataset en {data_path}.")
+        print(f"Error: Dataset not found at {data_path}.")
         return
         
-    # 3. Definir la lista completa de variables numéricas
+    # 3. Define the full list of numeric variables
     numeric_vars = ['temp', 'atemp', 'hum', 'windspeed']
     
-    # Configuración de cuadrícula (3 columnas)
+    # Grid configuration (3 columns)
     n_cols = 3
     n_rows = math.ceil(len(numeric_vars) / n_cols)
     
-    # 4. Generar cuadrícula de Histogramas
+    # 4. Generate Histograms grid
     fig_hist, axes_hist = plt.subplots(n_rows, n_cols, figsize=(16, n_rows * 4))
-    fig_hist.suptitle('Histogramas de Variables Numéricas', fontsize=16)
+    fig_hist.suptitle('Numeric Variables Histograms', fontsize=16)
     axes_hist_flat = axes_hist.flatten()
     
     for i, col in enumerate(numeric_vars):
         sns.histplot(df[col], kde=True, ax=axes_hist_flat[i], color='skyblue')
-        axes_hist_flat[i].set_title(f'Histograma de {col}')
+        axes_hist_flat[i].set_title(f'{col} Histogram')
         axes_hist_flat[i].set_xlabel('')
-        axes_hist_flat[i].set_ylabel('Frecuencia')
+        axes_hist_flat[i].set_ylabel('Frequency')
         
-    # Ocultar los subplots sobrantes de la cuadrícula
+    # Hide any extra subplots in the grid
     for j in range(i + 1, len(axes_hist_flat)):
         axes_hist_flat[j].set_visible(False)
         
     plt.tight_layout()
     hist_output = 'reports/figures/histograms.png'
     fig_hist.savefig(hist_output)
-    print(f"Figura generada y guardada: {hist_output}")
+    print(f"Figure generated and saved: {hist_output}")
     plt.close(fig_hist)
     
-    # 5. Generar cuadrícula de Boxplots
+    # 5. Generate Boxplots grid
     fig_box, axes_box = plt.subplots(n_rows, n_cols, figsize=(16, n_rows * 4))
-    fig_box.suptitle('Boxplots de Variables Numéricas', fontsize=16)
+    fig_box.suptitle('Numeric Variables Boxplots', fontsize=16)
     axes_box_flat = axes_box.flatten()
     
     for i, col in enumerate(numeric_vars):
         sns.boxplot(x=df[col], ax=axes_box_flat[i], color='lightgreen')
-        axes_box_flat[i].set_title(f'Boxplot de {col}')
+        axes_box_flat[i].set_title(f'{col} Boxplot')
         axes_box_flat[i].set_xlabel(col)
         
     for j in range(i + 1, len(axes_box_flat)):
@@ -64,12 +64,12 @@ def main():
     plt.tight_layout()
     box_output = 'reports/figures/boxplots_outliers.png'
     fig_box.savefig(box_output)
-    print(f"Figura generada y guardada: {box_output}\n")
+    print(f"Figure generated and saved: {box_output}\n")
     plt.close(fig_box)
     
-    # 6. Calcular IQR e imprimir outliers en consola
+    # 6. Calculate IQR and print outliers to console
     print("-" * 50)
-    print("REPORTE DE OUTLIERS MATEMÁTICOS (IQR)")
+    print("MATHEMATICAL OUTLIERS REPORT (IQR)")
     print("-" * 50)
     
     for col in numeric_vars:
@@ -77,11 +77,11 @@ def main():
         Q3 = df[col].quantile(0.75)
         IQR = Q3 - Q1
         
-        limite_inferior = Q1 - 1.5 * IQR
-        limite_superior = Q3 + 1.5 * IQR
+        lower_bound = Q1 - 1.5 * IQR
+        upper_bound = Q3 + 1.5 * IQR
         
-        outliers = df[(df[col] < limite_inferior) | (df[col] > limite_superior)]
-        print(f"Variable: {col:<10} -> Outliers detectados: {len(outliers)}")
+        outliers = df[(df[col] < lower_bound) | (df[col] > upper_bound)]
+        print(f"Variable: {col:<10} -> Detected outliers: {len(outliers)}")
         if len(outliers) > 0:
             outlier_map = outliers[col].to_dict()
             print(f"{col}: {{")

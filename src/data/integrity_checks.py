@@ -2,57 +2,57 @@
 import pandas as pd
 
 def run_integrity_checks():
-    # 1. Cargar solo los datos de entrenamiento
-    print("--- INICIANDO CHEQUEOS DE INTEGRIDAD ---")
+    # 1. Load only the training data
+    print("--- STARTING INTEGRITY CHECKS ---")
     try:
         df = pd.read_csv('data/processed/train.csv')
     except FileNotFoundError:
-        print("Error: No se encontró data/interim/train.csv")
+        print("Error: data/interim/train.csv not found")
         return
 
-    # 2. Chequeo de campos vacíos (Missing Values)
-    nulos = df.isnull().sum().sum()
-    print(f"[Check Nulos]: Cantidad total de campos vacíos en el dataset: {nulos}")
+    # 2. Check for empty fields (Missing Values)
+    null_count = df.isnull().sum().sum()
+    print(f"[Null Check]: Total number of empty fields in the dataset: {null_count}")
 
-    # 3. Chequeos de rangos válidos (Meses y Clima)
-    meses_validos = df['mnth'].between(1, 12).all()
-    clima_valido = df['weathersit'].between(1, 4).all()
-    estacion_valida = df['season'].between(1, 4).all()
+    # 3. Check for valid ranges (Months and Weather)
+    valid_months = df['mnth'].between(1, 12).all()
+    valid_weather = df['weathersit'].between(1, 4).all()
+    valid_season = df['season'].between(1, 4).all()
     
-    print(f"[Check Rangos]: ¿Todos los meses van de 1 a 12? {'Sí' if meses_validos else 'NO'}")
-    print(f"[Check Rangos]: ¿Todas las estaciones van de 1 a 4? {'Sí' if estacion_valida else 'NO'}")
-    print(f"[Check Rangos]: ¿Todo el clima va de 1 a 4? {'Sí' if clima_valido else 'NO'}")
+    print(f"[Range Check]: Are all months between 1 and 12? {'Yes' if valid_months else 'NO'}")
+    print(f"[Range Check]: Are all seasons between 1 and 4? {'Yes' if valid_season else 'NO'}")
+    print(f"[Range Check]: Is all weather between 1 and 4? {'Yes' if valid_weather else 'NO'}")
 
-    # 4. Verificar qué clases existen realmente en weathersit
-    clases_clima = df['weathersit'].unique()
-    clases_clima.sort()
-    print(f"[Check Clases]: Tipos de clima presentes en los datos: {clases_clima}")
+    # 4. Verify which classes actually exist in weathersit
+    weather_classes = df['weathersit'].unique()
+    weather_classes.sort()
+    print(f"[Class Check]: Weather types present in the data: {weather_classes}")
 
-    # 5. Chequeo de integridad cruzada: workingday vs holiday/weekend
-    # weekend suele ser weekday 0 (Domingo) y 6 (Sábado) según estándares, 
-    # comprobaremos si hay algún workingday=1 que a la vez sea holiday=1
-    errores_logicos = df[(df['workingday'] == 1) & (df['holiday'] == 1)]
-    print(f"[Check Lógica]: Días marcados como 'Laborables' pero que también son 'Feriados': {len(errores_logicos)}")
+    # 5. Cross-integrity check: workingday vs holiday/weekend
+    # weekend is usually weekday 0 (Sunday) and 6 (Saturday) according to standards, 
+    # we will check if there is any workingday=1 that is also holiday=1
+    logical_errors = df[(df['workingday'] == 1) & (df['holiday'] == 1)]
+    print(f"[Logic Check]: Days marked as 'Workingday' but are also 'Holiday': {len(logical_errors)}")
 
-    # 6. Chequeos estrictos de categorías
-    yr_valido = df['yr'].between(0, 1).all()
-    weekday_valido = df['weekday'].between(0, 6).all()
+    # 6. Strict category checks
+    valid_yr = df['yr'].between(0, 1).all()
+    valid_weekday = df['weekday'].between(0, 6).all()
     
-    print(f"\n[Check Categorías]: ¿Todo 'yr' es 0 o 1? {'Sí' if yr_valido else 'NO'}")
-    print(f"[Check Categorías]: ¿Todo 'weekday' va de 0 a 6? {'Sí' if weekday_valido else 'NO'}")
+    print(f"\n[Category Check]: Is all 'yr' 0 or 1? {'Yes' if valid_yr else 'NO'}")
+    print(f"[Category Check]: Is all 'weekday' between 0 and 6? {'Yes' if valid_weekday else 'NO'}")
 
-    # 7. Chequeo de variables normalizadas (0 a 1)
-    print("\n[Check Normalización]: Verificando variables continuas...")
-    vars_normalizadas = ['temp', 'atemp', 'hum', 'windspeed']
-    for var in vars_normalizadas:
-        rango_valido = df[var].between(0, 1).all()
-        print(f" - ¿'{var}' está estrictamente entre 0 y 1? {'Sí' if rango_valido else 'NO'}")
+    # 7. Normalized variables check (0 to 1)
+    print("\n[Normalization Check]: Verifying continuous variables...")
+    normalized_vars = ['temp', 'atemp', 'hum', 'windspeed']
+    for var in normalized_vars:
+        valid_range = df[var].between(0, 1).all()
+        print(f" - Is '{var}' strictly between 0 and 1? {'Yes' if valid_range else 'NO'}")
         
-        # Si llega a dar falso, imprimimos los extremos para ver la gravedad del error
-        if not rango_valido:
-            print(f"   -> ALERTA en '{var}': El mínimo es {df[var].min()} y el máximo es {df[var].max()}")
+        # If it is false, we print the extremes to see the severity of the error
+        if not valid_range:
+            print(f"   -> ALERT in '{var}': The minimum is {df[var].min()} and the maximum is {df[var].max()}")
 
-    print("--- CHEQUEOS FINALIZADOS ---")
+    print("--- CHECKS FINISHED ---")
 
 if __name__ == "__main__":
     run_integrity_checks()
