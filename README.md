@@ -34,12 +34,24 @@ windspeed: {
 
 Tenemos un solo valor de outlier de 0.0 en el instant 69, lo cual es raro. No entiendo bien que esta pasando.
 
+# Variables Categóricas
+
+
 # Limpieza de variables
 
+## Variables que no ofrecen información.
+### instant
+Es un id de la row.
+
+### yr
+Nos habla del 2011 y 2012, no tiene sentido extrapolar esa información al resto de años sin tener en cuenta variables económicas de esos años.
+
+### dteday
+No nos da información valiosa, al usar el csv de day, cada info es diaria.
 
 ## Variables correlacionadas:
 ### temp con atemp
-La temperatura y sensacion termica son valores que aportan practicamente la misma información lo que produce que esten altamente correlacionadas
+La temperatura y sensacion termica son valores que aportan practicamente la misma información lo que produce que esten altamente correlacionadas. Nos quedamos con atemp que es lo que sienten las personas realmente.
 
 ### Meses con Season
 En boxplots_categorics_cnt.png vemos como se relacionan ambas variables en cuanto a los valores que producen para cnt.
